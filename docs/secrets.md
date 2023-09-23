@@ -5,4 +5,4 @@
 |-|-|-|
 |USERNAME| |用户名|
 |PASSWORD| |密码|
-|DEBUG|`True`, `False`|调试模式|
+|DEBUG|`0`, `1`|调试模式（0=关闭，1=开启）|

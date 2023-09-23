@@ -15,7 +15,7 @@ password = os.environ["PASSWORD"]
 debug = os.environ["DEBUG"]
 
 # 设置日志级别和格式
-if debug:
+if debug == 1:
     logging.basicConfig(level=logging.DEBUG, format='[%(levelname)s] [%(asctime)s] %(message)s')
 else:
     logging.basicConfig(level=logging.INFO, format='[%(levelname)s] [%(asctime)s] %(message)s')
