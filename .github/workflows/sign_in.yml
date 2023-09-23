@@ -1,0 +1,31 @@
+# 苦力怕论坛 自动签到
+# GitHub: https://github.com/xyz8848/KLPBBS_auto_sign_in
+
+name: 'KLPBBS Auto Sign in'
+
+on:
+  schedule:
+    - cron: '1 0 0 * * ?' # 签到时间
+  workflow_dispatch:
+
+jobs:
+  sign-in:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@2
+
+      - name: Setup Python
+        uses: actions/setup-python@v1
+        with:
+          python-version: 3.11
+
+      - name: Install Requirements
+        run: pip install -r requirements.txt
+
+      - name: Sign in
+        env:
+          USERNAME: ${{ secrets.USERNAME }}
+          PASSWORD: ${{ secrets.PASSWORD }}
+          DEBUG: ${{ secrets.DEBUG }}
+        run: python main.py
