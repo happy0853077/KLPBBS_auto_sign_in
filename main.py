@@ -49,13 +49,9 @@ def login(username, password):
     # TODO 判断是否登录成功
 
 
-def get_html():
+def get_url():
     html_source = session.get('https://klpbbs.com/')
     logging.debug(html_source.text)
-    return html_source
-
-
-def get_url(html_source):
     soup = BeautifulSoup(html_source.text, 'html.parser')
     a_tag = soup.find('a', class_='midaben_signpanel JD_sign')
     if a_tag is not None:
@@ -72,7 +68,7 @@ def get_url(html_source):
 
         return sign_in_url
     else:
-        is_sign_in(html_source)
+        is_sign_in()
         return None
 
 
@@ -80,7 +76,9 @@ def sign_in(sign_in_url):
     session.get(sign_in_url, headers=header)
 
 
-def is_sign_in(html_source):
+def is_sign_in():
+    html_source = session.get('https://klpbbs.com/')
+    logging.debug(html_source.text)
     soup = BeautifulSoup(html_source.text, 'html.parser')
     a_tag = soup.find('a', class_='midaben_signpanel JD_sign visted')
     if a_tag is not None:
@@ -104,10 +102,8 @@ if __name__ == '__main__':
 
     login(username, password)
 
-    html = get_html()
-
-    url = get_url(html)
+    url = get_url()
 
     sign_in(url)
 
-    is_sign_in(html)
+    is_sign_in()
