@@ -3,16 +3,25 @@
 import http
 import logging
 import os
+import smtplib
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
 from http import cookiejar
 
 import requests
 from bs4 import BeautifulSoup
 
-username = os.environ["USERNAME"]
+username = os.environ.get("USERNAME")
+password = os.environ.get("PASSWORD")
 
-password = os.environ["PASSWORD"]
+debug = int(os.environ.get("DEBUG") or 0)
 
-debug = os.environ["DEBUG"]
+mail_enable = int(os.environ.get("MAIL_ENABLE") or 0)
+mail_host = os.environ.get("MAIL_HOST")
+mail_port = int(os.environ.get("MAIL_PORT") or 0)
+mail_username = os.environ.get("MAIL_USERNAME")
+mail_password = os.environ.get("MAIL_PASSWORD")
+mail_to = os.environ.get("MAIL_TO") or []
 
 # 设置日志级别和格式
 if debug == 1:
@@ -46,7 +55,13 @@ def login(username, password):
     header["Cookie"] = "; ".join([f"{cookie.name}={cookie.value}" for cookie in session.cookies])
     # logging.debug(f'Header: {header}')
 
-    # TODO 判断是否登录成功
+    soup = BeautifulSoup(response_res.text, 'html.parser')
+    a_tag = soup.find('a', href_='https://klpbbs.com/')
+    if a_tag is not None:
+        logging.info('登录成功')
+    else:
+        logging.info('登陆失败')
+        exit(101)
 
 
 def get_url():
@@ -85,16 +100,34 @@ def is_sign_in():
         href_value = a_tag['href']
         if href_value == 'k_misign-sign.html':
             logging.info('已成功签到')
-            exit(0)
+            email_notice('苦力怕论坛自动签到：已成功签到！')
         else:
             logging.info('签到失败')
+            email_notice('苦力怕论坛自动签到：签到失败')
     else:
         logging.info('签到失败')
+        email_notice('苦力怕论坛自动签到：签到失败')
 
 
-# TODO
-def email_notice():
-    ...
+def email_notice(msg):
+    if mail_enable == 0:
+        return None
+    message = MIMEMultipart()
+    message['From'] = mail_username
+    message['To'] = mail_to
+    message['Subject'] = msg
+    body = f"{msg}<br><br>Powered by <a href='https://github.com/xyz8848/KLPBBS_auto_sign_in'>https://github.com/xyz8848/KLPBBS_auto_sign_in</a>"
+    message.attach(MIMEText(body, "html"))
+
+    try:
+        server = smtplib.SMTP(mail_host, mail_port)
+        server.starttls()
+        server.login(mail_username, mail_password)
+        server.send_message(message)
+        logging.info('邮件发送成功')
+    except smtplib.SMTPException as error:
+        logging.info('邮件发送失败')
+        logging.error(error)
 
 
 if __name__ == '__main__':
