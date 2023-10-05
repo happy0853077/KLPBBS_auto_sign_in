@@ -101,12 +101,15 @@ def is_sign_in():
         if href_value == 'k_misign-sign.html':
             logging.info('已成功签到')
             email_notice('苦力怕论坛自动签到：已成功签到！')
+            exit(0)
         else:
             logging.info('签到失败')
             email_notice('苦力怕论坛自动签到：签到失败')
+            exit(100)
     else:
         logging.info('签到失败')
         email_notice('苦力怕论坛自动签到：签到失败')
+        exit(100)
 
 
 def email_notice(msg):
