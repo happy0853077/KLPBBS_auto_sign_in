@@ -55,13 +55,13 @@ def login(username, password):
     header["Cookie"] = "; ".join([f"{cookie.name}={cookie.value}" for cookie in session.cookies])
     # logging.debug(f'Header: {header}')
 
-    soup = BeautifulSoup(response_res.text, 'html.parser')
-    a_tag = soup.find('a', href_='https://klpbbs.com/')
-    if a_tag is not None:
-        logging.info('登录成功')
-    else:
-        logging.info('登陆失败')
-        exit(101)
+    # soup = BeautifulSoup(response_res.text, 'html.parser')
+    # a_tag = soup.find('a', href_='https://klpbbs.com/')
+    # if a_tag is not None:
+    #     logging.info('登录成功')
+    # else:
+    #     logging.info('登陆失败')
+    #     exit(101)
 
 
 def get_url():
