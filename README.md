@@ -1,5 +1,7 @@
 # [KLPBBS_auto_sign_in](https://github.com/xyz8848/KLPBBS_auto_sign_in)
-基于 GitHub Action 的苦力怕论坛自动签到脚本
+基于 GitHub Action 的苦力怕论坛自动签到脚本  
+[![GitHub Stars](https://img.shields.io/github/stars/xyz8848/KLPBBS_auto_sign_in)](https://github.com/xyz8848/KLPBBS_auto_sign_in/stargazers)
+[![GitHub Forks](https://img.shields.io/github/forks/xyz8848/KLPBBS_auto_sign_in)](https://github.com/xyz8848/KLPBBS_auto_sign_in/network/members)
 
 ## 如何使用
 
