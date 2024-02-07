@@ -26,8 +26,10 @@ mail_to = os.environ.get("MAIL_TO") or []
 # 设置日志级别和格式
 if debug == 1:
     logging.basicConfig(level=logging.DEBUG, format='[%(levelname)s] [%(asctime)s] %(message)s')
+    logging.info("Debug mode enabled.")
 else:
     logging.basicConfig(level=logging.INFO, format='[%(levelname)s] [%(asctime)s] %(message)s')
+    logging.info("Debug mode disabled.")
 
 userAgent = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36 Edg/116.0.1938.81'
 
