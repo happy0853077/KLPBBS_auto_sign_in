@@ -6,9 +6,11 @@
 ## 如何使用
 
 1. [Fork](https://github.com/xyz8848/KLPBBS_auto_sign_in/fork) 这个仓库
-2. 打开 Actions secrets and variables  
-![](https://cdn.xyz8848.com/img/github/KLPBBS_auto_sign_in/1.png)
-3. 添加以下 secret：`USERNAME`，`PASSWORD`（[点击查看更多内容](https://github.com/xyz8848/KLPBBS_auto_sign_in/blob/main/docs/secrets.md)）
+2. 授予工作流读取和写入权限<small>（用于工作流保活，如果仓库中在过去 60 天内没有提交，GitHub 将暂停 GitHub 工作流的计划触发器。除非进行新的提交，否则基于 cron 的触发器不会运行。）</small>  
+![](img/step2.webp)
+3. 打开 Actions secrets and variables  
+![](img/step3.webp)
+4. 添加以下 secret：`USERNAME`，`PASSWORD`（[点击查看更多内容](https://github.com/xyz8848/KLPBBS_auto_sign_in/blob/main/docs/secrets.md)）
 
 ## 更多功能
 ### 自定义签到时间
@@ -21,3 +23,7 @@
 
 ### 签到后企业微信提示
 _施工中_
+
+### 签到后Server酱提示
+1. 打开 Actions secrets and variables
+2. 添加以下 secret：`SERVERCHAN_ENABLE`，`SERVERCHAN_KEY`（[点击查看更多内容](https://github.com/xyz8848/KLPBBS_auto_sign_in/blob/main/docs/secrets.md)）

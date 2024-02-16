@@ -12,3 +12,5 @@
 |MAIL_USERNAME| |邮箱账号|
 |MAIL_PASSWORD| |邮箱密码|
 |MAIL_TO| |用于接收通知的邮箱|
+|SERVERCHAN_ENABLE|`0`, `1`|签到后Server酱提示（0=关闭，1=开启）|
+|SERVERCHAN_KEY| |Server酱 SendKey|
