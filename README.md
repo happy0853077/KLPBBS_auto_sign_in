@@ -27,3 +27,6 @@ _施工中_
 ### 签到后Server酱提示
 1. 打开 Actions secrets and variables
 2. 添加以下 secret：`SERVERCHAN_ENABLE`，`SERVERCHAN_KEY`（[点击查看更多内容](https://github.com/xyz8848/KLPBBS_auto_sign_in/blob/main/docs/secrets.md)）
+
+## 统计数据
+![](https://repobeats.axiom.co/api/embed/61dc140b2e19a099f83e593318024e98f7b66be5.svg)
