@@ -6,7 +6,7 @@
 ## 如何使用
 
 1. [Fork](https://github.com/xyz8848/KLPBBS_auto_sign_in/fork) 这个仓库
-2. 授予工作流读取和写入权限<small>（用于工作流保活，如果仓库中在过去 60 天内没有提交，GitHub 将暂停 GitHub 工作流的计划触发器。除非进行新的提交，否则基于 cron 的触发器不会运行。）</small>  
+2. 授予工作流读取和写入权限（用于工作流保活，如果仓库中在过去 60 天内没有提交，GitHub 将暂停 GitHub 工作流的计划触发器。除非进行新的提交，否则基于 cron 的触发器不会运行。）
 ![](img/step2.webp)
 3. 打开 Actions secrets and variables  
 ![](img/step3.webp)
