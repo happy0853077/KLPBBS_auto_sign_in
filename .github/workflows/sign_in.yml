@@ -29,3 +29,5 @@ jobs:
           PASSWORD: ${{ secrets.PASSWORD }}
           DEBUG: ${{ secrets.DEBUG }}
         run: python main.py
+
+      - uses: gautamkrishnar/keepalive-workflow@v1

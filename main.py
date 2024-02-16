@@ -23,6 +23,9 @@ mail_username = os.environ.get("MAIL_USERNAME")
 mail_password = os.environ.get("MAIL_PASSWORD")
 mail_to = os.environ.get("MAIL_TO") or []
 
+serverchan_enable = int(os.environ.get("SERVERCHAN_ENABLE") or 0)
+serverchan_key = os.environ.get("SERVERCHAN_KEY")
+
 # 设置日志级别和格式
 if debug == 1:
     logging.basicConfig(level=logging.DEBUG, format='[%(levelname)s] [%(asctime)s] %(message)s')
@@ -103,14 +106,17 @@ def is_sign_in():
         if href_value == 'k_misign-sign.html':
             logging.info('已成功签到')
             email_notice('苦力怕论坛自动签到：已成功签到！')
+            serverchan_notice('苦力怕论坛自动签到：已成功签到！')
             exit(0)
         else:
             logging.info('签到失败')
             email_notice('苦力怕论坛自动签到：签到失败')
+            serverchan_notice('苦力怕论坛自动签到：签到失败')
             exit(100)
     else:
         logging.info('签到失败')
         email_notice('苦力怕论坛自动签到：签到失败')
+        serverchan_notice('苦力怕论坛自动签到：签到失败')
         exit(100)
 
 
@@ -134,6 +140,23 @@ def email_notice(msg):
         logging.info('邮件发送失败')
         logging.error(error)
 
+        
+def serverchan_notice(msg):
+    if serverchan_enable == 0:
+        return None
+    url = f"https://sctapi.ftqq.com/{serverchan_key}.send"
+    data = {
+        "title": "苦力怕论坛自动签到",
+        "desp": msg
+    }
+    try:
+        response = requests.post(url, data=data)
+        logging.debug(response.text)
+        logging.info('Server酱消息发送成功')
+    except requests.RequestException as error:
+        logging.info('Server酱消息发送失败')
+        logging.error(error)
+
 
 if __name__ == '__main__':
     logging.debug(f'UserAgent: {userAgent}')
@@ -145,3 +168,4 @@ if __name__ == '__main__':
     sign_in(url)
 
     is_sign_in()
+    
