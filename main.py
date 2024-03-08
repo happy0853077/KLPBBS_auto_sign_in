@@ -124,14 +124,14 @@ def is_sign_in():
                     notice('苦力怕论坛自动签到：已切换回普通用户组')
                 elif renewal_vip == 1:
                     session.get(
-                        'https://klpbbs.com/home.php?mod=spacecp&ac=usergroup&do=buy&groupid=21&handlekey=buygrouphk',
+                        'https://klpbbs.com/home.php?mod=spacecp&ac=usergroup&do=buy&groupid=21&inajax=1',
                         headers=header)
                     logging.info('已续费VIP')
                     notice('苦力怕论坛自动签到：已续费VIP')
                     os.execl(sys.executable, sys.executable, *sys.argv)
                 elif renewal_svip == 1:
                     session.get(
-                        'https://klpbbs.com/home.php?mod=spacecp&ac=usergroup&do=buy&groupid=22&handlekey=buygrouphk',
+                        'https://klpbbs.com/home.php?mod=spacecp&ac=usergroup&do=buy&groupid=22&inajax=1',
                         headers=header)
                     logging.info('已续费SVIP')
                     notice('苦力怕论坛自动签到：已续费SVIP')
