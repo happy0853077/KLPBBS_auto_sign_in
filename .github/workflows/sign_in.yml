@@ -10,6 +10,7 @@ on:
 
 jobs:
   sign-in:
+    name: Sign in
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -38,4 +39,13 @@ jobs:
           SERVERCHAN_KEY: ${{ secrets.SERVERCHAN_KEY }}
         run: python main.py
 
+  keepalive-workflow:
+    name: Keepalive Workflow
+    runs-on: ubuntu-latest
+    permissions:
+      actions: write
+    steps:
+      - uses: actions/checkout@v4
       - uses: gautamkrishnar/keepalive-workflow@v1
+        with:
+          use_api: true

@@ -10,23 +10,27 @@
 ![step2.webp](img/step2.webp)
 3. 打开 Actions secrets and variables  
 ![step3.webp](img/step3.webp)
-4. 添加以下 secret：`USERNAME`，`PASSWORD`（[点击查看更多内容](https://github.com/xyz8848/KLPBBS_auto_sign_in/blob/main/docs/secrets.md)）
+4. 添加以下 secret：[`USERNAME`](https://github.com/xyz8848/KLPBBS_auto_sign_in/blob/main/docs/secrets.md#username)，[`PASSWORD`](https://github.com/xyz8848/KLPBBS_auto_sign_in/blob/main/docs/secrets.md#password)
 
 ## 更多功能
 ### 自定义签到时间
 （默认每天 00:01 签到）
 1. 到 [`.github/workflows/sign_in.yml`](.github/workflows/sign_in.yml) 中修改签到时间
 
+### 用户组到期后自动续费
+1. 打开 Actions secrets and variables
+2. 添加以下 secret：[`SWITCH_USER`](https://github.com/xyz8848/KLPBBS_auto_sign_in/blob/main/docs/secrets.md#switch_user) 或 [`RENEWAL_VIP`](https://github.com/xyz8848/KLPBBS_auto_sign_in/blob/main/docs/secrets.md#renewal_vip) 或 [`RENEWAL_SVIP`](https://github.com/xyz8848/KLPBBS_auto_sign_in/blob/main/docs/secrets.md#renewal_svip)
+
 ### 签到后邮件提示
 1. 打开 Actions secrets and variables
-2. 添加以下 secret：`MAIL_ENABLE`，`MAIL_HOST`，`MAIL_PORT`，`MAIL_USERNAME`，`MAIL_PASSWORD`，`MAIL_TO`（[点击查看更多内容](https://github.com/xyz8848/KLPBBS_auto_sign_in/blob/main/docs/secrets.md)）
+2. 添加以下 secret：[`MAIL_ENABLE`](https://github.com/xyz8848/KLPBBS_auto_sign_in/blob/main/docs/secrets.md#mail_enable)，[`MAIL_HOST`](https://github.com/xyz8848/KLPBBS_auto_sign_in/blob/main/docs/secrets.md#mail_host)，[`MAIL_PORT`](https://github.com/xyz8848/KLPBBS_auto_sign_in/blob/main/docs/secrets.md#mail_port)，[`MAIL_USERNAME`](https://github.com/xyz8848/KLPBBS_auto_sign_in/blob/main/docs/secrets.md#mail_username)，[`MAIL_PASSWORD`](https://github.com/xyz8848/KLPBBS_auto_sign_in/blob/main/docs/secrets.md#mail_password)，[`MAIL_TO`](https://github.com/xyz8848/KLPBBS_auto_sign_in/blob/main/docs/secrets.md#mail_to)
 
 ### 签到后企业微信提示
 _施工中_
 
 ### 签到后Server酱提示
 1. 打开 Actions secrets and variables
-2. 添加以下 secret：`SERVERCHAN_ENABLE`，`SERVERCHAN_KEY`（[点击查看更多内容](https://github.com/xyz8848/KLPBBS_auto_sign_in/blob/main/docs/secrets.md)）
+2. 添加以下 secret：[`SERVERCHAN_ENABLE`](https://github.com/xyz8848/KLPBBS_auto_sign_in/blob/main/docs/secrets.md#serverchan_enable)，[`SERVERCHAN_KEY`](https://github.com/xyz8848/KLPBBS_auto_sign_in/blob/main/docs/secrets.md#serverchan_key)
 
 ## 统计数据
 ![](https://repobeats.axiom.co/api/embed/61dc140b2e19a099f83e593318024e98f7b66be5.svg)

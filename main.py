@@ -4,6 +4,7 @@ import http
 import logging
 import os
 import smtplib
+import sys
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from http import cookiejar
@@ -13,6 +14,10 @@ from bs4 import BeautifulSoup
 
 username = os.environ.get("USERNAME")
 password = os.environ.get("PASSWORD")
+
+switch_user = int(os.environ.get("SWITCH_USER") or 0)
+renewal_vip = int(os.environ.get("RENEWAL_VIP") or 0)
+renewal_svip = int(os.environ.get("RENEWAL_SVIP") or 0)
 
 debug = int(os.environ.get("DEBUG") or 0)
 
@@ -55,7 +60,7 @@ def login(username, password):
 
     response_res = session.post(post_url, data=post_data, headers=header)
     logging.debug(f"statusCode = {response_res.status_code}")
-    logging.debug(f"text = {response_res.text}")
+    logging.debug(f"https://klpbbs.com/member.php?mod=logging&action=login&loginsubmit=yes = {response_res.text}")
 
     header["Cookie"] = "; ".join([f"{cookie.name}={cookie.value}" for cookie in session.cookies])
     # logging.debug(f'Header: {header}')
@@ -66,7 +71,7 @@ def login(username, password):
     #     logging.info('登录成功')
     # else:
     #     logging.info('登陆失败')
-    #     exit(101)
+    #     exit(1)
 
 
 def get_url():
@@ -81,8 +86,8 @@ def get_url():
         logging.debug(f'签到链接：{sign_in_url}')
 
         if sign_in_url == 'https://klpbbs.com/member.php?mod=logging&action=login':
-            logging.info('签到链接异常')
-            exit(100)
+            logging.info('签到链接异常（原因：登陆失败）')
+            exit(1)
 
         logging.info('已成功获取签到链接')
 
@@ -98,31 +103,61 @@ def sign_in(sign_in_url):
 
 def is_sign_in():
     html_source = session.get('https://klpbbs.com/')
-    logging.debug(html_source.text)
+    logging.debug(f'https://klpbbs.com/ = {html_source.text}')
     soup = BeautifulSoup(html_source.text, 'html.parser')
     a_tag = soup.find('a', class_='midaben_signpanel JD_sign visted')
     if a_tag is not None:
         href_value = a_tag['href']
         if href_value == 'k_misign-sign.html':
             logging.info('已成功签到')
-            email_notice('苦力怕论坛自动签到：已成功签到！')
-            serverchan_notice('苦力怕论坛自动签到：已成功签到！')
+            notice('苦力怕论坛自动签到：已成功签到！')
             exit(0)
-        else:
+        else:  # 异常处理
+            # 用户组到期处理
+            div_tag = soup.find('div', class_='notice')
+            if div_tag == '您当前的用户组已经到期，请选择继续续费还是要切换到其他用户组':
+                if switch_user == 1:
+                    session.get(
+                        'https://klpbbs.com/home.php?mod=spacecp&ac=usergroup&do=switch&groupid=10&handlekey=switchgrouphk',
+                        headers=header)
+                    logging.info('已切换回普通用户组')
+                    notice('苦力怕论坛自动签到：已切换回普通用户组')
+                elif renewal_vip == 1:
+                    session.get(
+                        'https://klpbbs.com/home.php?mod=spacecp&ac=usergroup&do=buy&groupid=21&handlekey=buygrouphk',
+                        headers=header)
+                    logging.info('已续费VIP')
+                    notice('苦力怕论坛自动签到：已续费VIP')
+                    os.execl(sys.executable, sys.executable, *sys.argv)
+                elif renewal_svip == 1:
+                    session.get(
+                        'https://klpbbs.com/home.php?mod=spacecp&ac=usergroup&do=buy&groupid=22&handlekey=buygrouphk',
+                        headers=header)
+                    logging.info('已续费SVIP')
+                    notice('苦力怕论坛自动签到：已续费SVIP')
+                    os.execl(sys.executable, sys.executable, *sys.argv)
+                else:
+                    logging.info(f'签到失败（原因：当前用户组已到期）')
+                    notice('苦力怕论坛自动签到：签到失败（原因：当前用户组已到期）')
+                    exit(1)
+
             logging.info('签到失败')
-            email_notice('苦力怕论坛自动签到：签到失败')
-            serverchan_notice('苦力怕论坛自动签到：签到失败')
-            exit(100)
+            notice('苦力怕论坛自动签到：签到失败')
+            exit(1)
     else:
         logging.info('签到失败')
-        email_notice('苦力怕论坛自动签到：签到失败')
-        serverchan_notice('苦力怕论坛自动签到：签到失败')
-        exit(100)
+        notice('苦力怕论坛自动签到：签到失败')
+        exit(1)
+
+
+def notice(msg):
+    if mail_enable == 1:
+        email_notice(msg)
+    if serverchan_enable == 1:
+        serverchan_notice(msg)
 
 
 def email_notice(msg):
-    if mail_enable == 0:
-        return None
     message = MIMEMultipart()
     message['From'] = mail_username
     message['To'] = mail_to
@@ -140,10 +175,8 @@ def email_notice(msg):
         logging.info('邮件发送失败')
         logging.error(error)
 
-        
+
 def serverchan_notice(msg):
-    if serverchan_enable == 0:
-        return None
     url = f"https://sctapi.ftqq.com/{serverchan_key}.send"
     data = {
         "title": "苦力怕论坛自动签到",
@@ -168,4 +201,3 @@ if __name__ == '__main__':
     sign_in(url)
 
     is_sign_in()
-    
