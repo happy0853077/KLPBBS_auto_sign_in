@@ -37,6 +37,10 @@ jobs:
           MAIL_TO: ${{ secrets.MAIL_TO }}
           SERVERCHAN_ENABLE: ${{ secrets.SERVERCHAN_ENABLE }}
           SERVERCHAN_KEY: ${{ secrets.SERVERCHAN_KEY }}
+          NTFY_ENABLE: ${{ secrets.NTFY_ENABLE }}
+          NTFY_BASEURL: ${{ secrets.NTFY_BASEURL }}
+          NTFY_TOKEN: ${{ secrets.NTFY_TOKEN }}
+          NTFY_TOPIC: ${{ secrets.NTFY_TOPIC }}
         run: python main.py
 
   keepalive-workflow:

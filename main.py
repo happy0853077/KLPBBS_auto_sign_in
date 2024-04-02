@@ -31,6 +31,11 @@ mail_to = os.environ.get("MAIL_TO") or []
 serverchan_enable = int(os.environ.get("SERVERCHAN_ENABLE") or 0)
 serverchan_key = os.environ.get("SERVERCHAN_KEY")
 
+ntfy_enable = int(os.environ.get("NTFY_ENABLE") or 0)
+ntfy_baseurl = os.environ.get("NTFY_BASEURL") or 'ntfy.sh'
+ntfy_topic = os.environ.get("NTFY_TOPIC")
+ntfy_token = os.environ.get("NTFY_TOKEN")
+
 # 设置日志级别和格式
 if debug == 1:
     logging.basicConfig(level=logging.DEBUG, format='[%(levelname)s] [%(asctime)s] %(message)s')
@@ -155,6 +160,8 @@ def notice(msg):
         email_notice(msg)
     if serverchan_enable == 1:
         serverchan_notice(msg)
+    if ntfy_enable != 0:
+        ntfy_notice(msg)
 
 
 def email_notice(msg):
@@ -190,6 +197,42 @@ def serverchan_notice(msg):
         logging.info('Server酱消息发送失败')
         logging.error(error)
 
+def ntfy_notice(msg):
+    if ntfy_enable == 0:
+        return None
+    elif ntfy_enable == 1:
+        # 如果 ntfy_enable 为 1，将 auth 拆分为用户名和密码
+        username, password = ntfy_token.split(':', 1)
+    elif ntfy_enable == 2:
+        # 如果 ntfy_enable 为 2，用户名为空，密码为 auth 中的内容
+        username = ''
+        password = ntfy_token.split(':', 1)[-1]
+    
+    auth = requests.auth.HTTPBasicAuth(username, password)
+    
+    corrected_url=process_domain(ntfy_baseurl)
+    url = f"{corrected_url}/{ntfy_topic}"
+    data = msg.encode("utf-8")
+        
+    headers = {
+        "Title": "苦力怕论坛自动签到".encode("utf-8")
+    }
+    try:
+        response = requests.post(url, data=data, headers=headers, auth=auth)
+        logging.debug(response.text)
+        logging.info('Ntfy消息发送成功')
+    except requests.RequestException as error:
+        logging.info('Ntfy消息发送失败')
+        logging.error(error)
+
+# 添加默认协议和去除多余斜杠
+def process_domain(domain):
+    
+    if not domain.startswith(('http://', 'https://')):
+        domain = 'https://' + domain
+    parts = domain.split('/', 3)
+    corrected_url = parts[0] + '//' + parts[2] + '/' if len(parts) > 2 else parts[0] + '//' + parts[2]
+    return corrected_url
 
 if __name__ == '__main__':
     logging.debug(f'UserAgent: {userAgent}')
