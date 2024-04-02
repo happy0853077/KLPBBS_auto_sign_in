@@ -75,7 +75,7 @@ def login(username, password):
     # if a_tag is not None:
     #     logging.info('登录成功')
     # else:
-    #     logging.info('登陆失败')
+    #     logging.info('登录失败')
     #     exit(1)
 
 
@@ -91,7 +91,7 @@ def get_url():
         logging.debug(f'签到链接：{sign_in_url}')
 
         if sign_in_url == 'https://klpbbs.com/member.php?mod=logging&action=login':
-            logging.info('签到链接异常（原因：登陆失败）')
+            logging.info('签到链接异常（原因：登录失败）')
             exit(1)
 
         logging.info('已成功获取签到链接')
