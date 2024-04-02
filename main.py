@@ -33,8 +33,8 @@ serverchan_key = os.environ.get("SERVERCHAN_KEY")
 
 ntfy_enable = int(os.environ.get("NTFY_ENABLE") or 0)
 ntfy_baseurl = os.environ.get("NTFY_BASEURL") or 'ntfy.sh'
-ntfy_topic = os.environ.get("NTFY_TOPIC")
 ntfy_token = os.environ.get("NTFY_TOKEN")
+ntfy_topic = os.environ.get("NTFY_TOPIC")
 
 # 设置日志级别和格式
 if debug == 1:
