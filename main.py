@@ -31,6 +31,13 @@ mail_to = os.environ.get("MAIL_TO") or []
 serverchan_enable = int(os.environ.get("SERVERCHAN_ENABLE") or 0)
 serverchan_key = os.environ.get("SERVERCHAN_KEY")
 
+ntfy_enable = int(os.environ.get("NTFY_ENABLE") or 0)
+ntfy_url = os.environ.get("NTFY_URL") or "https://ntfy.sh"
+ntfy_topic = os.environ.get("NTFY_TOPIC")
+ntfy_username = os.environ.get("NTFY_USERNAME")
+ntfy_password = os.environ.get("NTFY_PASSWORD")
+ntfy_token = os.environ.get("NTFY_TOKEN")
+
 # 设置日志级别和格式
 if debug == 1:
     logging.basicConfig(level=logging.DEBUG, format='[%(levelname)s] [%(asctime)s] %(message)s')
@@ -70,7 +77,7 @@ def login(username, password):
     # if a_tag is not None:
     #     logging.info('登录成功')
     # else:
-    #     logging.info('登陆失败')
+    #     logging.info('登录失败')
     #     exit(1)
 
 
@@ -86,7 +93,7 @@ def get_url():
         logging.debug(f'签到链接：{sign_in_url}')
 
         if sign_in_url == 'https://klpbbs.com/member.php?mod=logging&action=login':
-            logging.info('签到链接异常（原因：登陆失败）')
+            logging.info('签到链接异常（原因：登录失败）')
             exit(1)
 
         logging.info('已成功获取签到链接')
@@ -155,6 +162,8 @@ def notice(msg):
         email_notice(msg)
     if serverchan_enable == 1:
         serverchan_notice(msg)
+    if ntfy_enable == 1:
+        ntfy_notice(msg)
 
 
 def email_notice(msg):
@@ -189,6 +198,38 @@ def serverchan_notice(msg):
     except requests.RequestException as error:
         logging.info('Server酱消息发送失败')
         logging.error(error)
+
+
+def ntfy_notice(msg):
+    if not ntfy_username == "":
+        auth = requests.auth.HTTPBasicAuth(ntfy_username, ntfy_password)
+    if not ntfy_token == "":
+        auth = requests.auth.HTTPBasicAuth("", ntfy_token)
+    else
+        logging.error("ntfy 认证信息异常")
+
+    corrected_url = process_domain(ntfy_url)
+    url = f"{corrected_url}/{ntfy_topic}"
+    data = msg.encode("utf-8")
+
+    headers = {
+        "Title": "苦力怕论坛自动签到".encode("utf-8")
+    }
+    try:
+        response = requests.post(url, data=data, headers=headers, auth=auth)
+        logging.debug(response.text)
+        logging.info('Ntfy消息发送成功')
+    except requests.RequestException as error:
+        logging.info('Ntfy消息发送失败')
+        logging.error(error)
+
+
+def process_domain(domain):
+    if not domain.startswith(('http://', 'https://')):
+        domain = 'https://' + domain
+    parts = domain.split('/', 3)
+    corrected_url = parts[0] + '//' + parts[2] + '/' if len(parts) > 2 else parts[0] + '//' + parts[2]
+    return corrected_url
 
 
 if __name__ == '__main__':
