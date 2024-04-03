@@ -83,3 +83,38 @@
 - **描述**：Server酱 SendKey
 - **必填**：否
 - **值型**：字符串
+
+### NTFY_ENABLE
+- **描述**：签到后 Ntfy 通知（0=关闭，1=开启）
+- **必填**：否
+- **值型**：整数
+- **示例**：`1`
+
+### NTFY_URL
+- **描述**：Ntfy 域名
+- **必填**：否
+- **值型**：字符串
+- **示例**：`https://ntfy.sh/`，`http://ntfy.sh/`，`ntfy.sh`
+
+### NTFY_TOPIC
+- **描述**：Ntfy 主题
+- **必填**：否
+- **值型**：字符串
+
+### NTFY_USERNAME
+- **描述**：Ntfy 用户名
+- **必填**：否
+- **值型**：字符串
+- **示例**：`your_ntfy_username`
+
+### NTFY_PASSWORD
+- **描述**：Ntfy 密码
+- **必填**：否
+- **值型**：字符串
+- **示例**：`your_ntfy_password`
+
+### NTFY_TOKEN
+- **描述**：Ntfy 令牌
+- **必填**：否
+- **值型**：字符串
+- **示例**：`your_ntfy_token`

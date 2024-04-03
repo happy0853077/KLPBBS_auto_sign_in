@@ -32,5 +32,12 @@ _施工中_
 1. 打开 Actions secrets and variables
 2. 添加以下 secret：[`SERVERCHAN_ENABLE`](https://github.com/xyz8848/KLPBBS_auto_sign_in/blob/main/docs/secrets.md#serverchan_enable)，[`SERVERCHAN_KEY`](https://github.com/xyz8848/KLPBBS_auto_sign_in/blob/main/docs/secrets.md#serverchan_key)
 
+### 签到后 Ntfy 提示
+1. 打开 Actions secrets and variables
+2. 添加以下 secret：[`NTFY_ENABLE`](https://github.com/xyz8848/KLPBBS_auto_sign_in/blob/main/docs/secrets.md#ntfy_enable)，[`NTFY_URL`](https://github.com/xyz8848/KLPBBS_auto_sign_in/blob/main/docs/secrets.md#ntfy_url)，[`NTFY_TOPIC`](https://github.com/xyz8848/KLPBBS_auto_sign_in/blob/main/docs/secrets.md#ntfy_topic)
+3. 认证 **（以下方法任选一个）**
+    1. 如果要使用**用户名+密码**认证，添加以下 secret：[`NTFY_USERNAME`](https://github.com/xyz8848/KLPBBS_auto_sign_in/blob/main/docs/secrets.md#ntfy_username)，[`NTFY_PASSWORD`](https://github.com/xyz8848/KLPBBS_auto_sign_in/blob/main/docs/secrets.md#ntfy_password)
+    2. 如果要使用 **Token** 认证，添加以下 secret：[`NTFY_TOKEN`](https://github.com/xyz8848/KLPBBS_auto_sign_in/blob/main/docs/secrets.md#ntfy_token)
+
 ## 统计数据
 ![](https://repobeats.axiom.co/api/embed/61dc140b2e19a099f83e593318024e98f7b66be5.svg)
