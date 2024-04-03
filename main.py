@@ -40,18 +40,22 @@ ntfy_token = os.environ.get("NTFY_TOKEN")
 
 # 设置日志级别和格式
 if debug == 1:
-    logging.basicConfig(level=logging.DEBUG, format='[%(levelname)s] [%(asctime)s] %(message)s')
+    logging.basicConfig(
+        level=logging.DEBUG, format="[%(levelname)s] [%(asctime)s] %(message)s"
+    )
     logging.info("Debug mode enabled.")
 else:
-    logging.basicConfig(level=logging.INFO, format='[%(levelname)s] [%(asctime)s] %(message)s')
+    logging.basicConfig(
+        level=logging.INFO, format="[%(levelname)s] [%(asctime)s] %(message)s"
+    )
     logging.info("Debug mode disabled.")
 
-userAgent = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36 Edg/116.0.1938.81'
+userAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36 Edg/116.0.1938.81"
 
 header = {
     "origin": "https://klpbbs.com",
     "Referer": "https://klpbbs.com/",
-    'User-Agent': userAgent,
+    "User-Agent": userAgent,
 }
 
 session = requests.session()
@@ -67,9 +71,13 @@ def login(username, password):
 
     response_res = session.post(post_url, data=post_data, headers=header)
     logging.debug(f"statusCode = {response_res.status_code}")
-    logging.debug(f"https://klpbbs.com/member.php?mod=logging&action=login&loginsubmit=yes = {response_res.text}")
+    logging.debug(
+        f"https://klpbbs.com/member.php?mod=logging&action=login&loginsubmit=yes = {response_res.text}"
+    )
 
-    header["Cookie"] = "; ".join([f"{cookie.name}={cookie.value}" for cookie in session.cookies])
+    header["Cookie"] = "; ".join(
+        [f"{cookie.name}={cookie.value}" for cookie in session.cookies]
+    )
     # logging.debug(f'Header: {header}')
 
     # soup = BeautifulSoup(response_res.text, 'html.parser')
@@ -82,21 +90,21 @@ def login(username, password):
 
 
 def get_url():
-    html_source = session.get('https://klpbbs.com/')
+    html_source = session.get("https://klpbbs.com/")
     logging.debug(html_source.text)
-    soup = BeautifulSoup(html_source.text, 'html.parser')
-    a_tag = soup.find('a', class_='midaben_signpanel JD_sign')
+    soup = BeautifulSoup(html_source.text, "html.parser")
+    a_tag = soup.find("a", class_="midaben_signpanel JD_sign")
     if a_tag is not None:
-        href_value = a_tag['href']
-        sign_in_url = 'https://klpbbs.com/' + href_value
+        href_value = a_tag["href"]
+        sign_in_url = "https://klpbbs.com/" + href_value
 
-        logging.debug(f'签到链接：{sign_in_url}')
+        logging.debug(f"签到链接：{sign_in_url}")
 
-        if sign_in_url == 'https://klpbbs.com/member.php?mod=logging&action=login':
-            logging.info('签到链接异常（原因：登录失败）')
+        if sign_in_url == "https://klpbbs.com/member.php?mod=logging&action=login":
+            logging.info("签到链接异常（原因：登录失败）")
             exit(1)
 
-        logging.info('已成功获取签到链接')
+        logging.info("已成功获取签到链接")
 
         return sign_in_url
     else:
@@ -109,51 +117,57 @@ def sign_in(sign_in_url):
 
 
 def is_sign_in():
-    html_source = session.get('https://klpbbs.com/')
-    logging.debug(f'https://klpbbs.com/ = {html_source.text}')
-    soup = BeautifulSoup(html_source.text, 'html.parser')
-    a_tag = soup.find('a', class_='midaben_signpanel JD_sign visted')
+    html_source = session.get("https://klpbbs.com/")
+    logging.debug(f"https://klpbbs.com/ = {html_source.text}")
+    soup = BeautifulSoup(html_source.text, "html.parser")
+    a_tag = soup.find("a", class_="midaben_signpanel JD_sign visted")
     if a_tag is not None:
-        href_value = a_tag['href']
-        if href_value == 'k_misign-sign.html':
-            logging.info('已成功签到')
-            notice('苦力怕论坛自动签到：已成功签到！')
+        href_value = a_tag["href"]
+        if href_value == "k_misign-sign.html":
+            logging.info("已成功签到")
+            notice("苦力怕论坛自动签到：已成功签到！")
             exit(0)
         else:  # 异常处理
             # 用户组到期处理
-            div_tag = soup.find('div', class_='notice')
-            if div_tag == '您当前的用户组已经到期，请选择继续续费还是要切换到其他用户组':
+            div_tag = soup.find("div", class_="notice")
+            if (
+                div_tag
+                == "您当前的用户组已经到期，请选择继续续费还是要切换到其他用户组"
+            ):
                 if switch_user == 1:
                     session.get(
-                        'https://klpbbs.com/home.php?mod=spacecp&ac=usergroup&do=switch&groupid=10&handlekey=switchgrouphk',
-                        headers=header)
-                    logging.info('已切换回普通用户组')
-                    notice('苦力怕论坛自动签到：已切换回普通用户组')
+                        "https://klpbbs.com/home.php?mod=spacecp&ac=usergroup&do=switch&groupid=10&handlekey=switchgrouphk",
+                        headers=header,
+                    )
+                    logging.info("已切换回普通用户组")
+                    notice("苦力怕论坛自动签到：已切换回普通用户组")
                 elif renewal_vip == 1:
                     session.get(
-                        'https://klpbbs.com/home.php?mod=spacecp&ac=usergroup&do=buy&groupid=21&inajax=1',
-                        headers=header)
-                    logging.info('已续费VIP')
-                    notice('苦力怕论坛自动签到：已续费VIP')
+                        "https://klpbbs.com/home.php?mod=spacecp&ac=usergroup&do=buy&groupid=21&inajax=1",
+                        headers=header,
+                    )
+                    logging.info("已续费VIP")
+                    notice("苦力怕论坛自动签到：已续费VIP")
                     os.execl(sys.executable, sys.executable, *sys.argv)
                 elif renewal_svip == 1:
                     session.get(
-                        'https://klpbbs.com/home.php?mod=spacecp&ac=usergroup&do=buy&groupid=22&inajax=1',
-                        headers=header)
-                    logging.info('已续费SVIP')
-                    notice('苦力怕论坛自动签到：已续费SVIP')
+                        "https://klpbbs.com/home.php?mod=spacecp&ac=usergroup&do=buy&groupid=22&inajax=1",
+                        headers=header,
+                    )
+                    logging.info("已续费SVIP")
+                    notice("苦力怕论坛自动签到：已续费SVIP")
                     os.execl(sys.executable, sys.executable, *sys.argv)
                 else:
-                    logging.info(f'签到失败（原因：当前用户组已到期）')
-                    notice('苦力怕论坛自动签到：签到失败（原因：当前用户组已到期）')
+                    logging.info(f"签到失败（原因：当前用户组已到期）")
+                    notice("苦力怕论坛自动签到：签到失败（原因：当前用户组已到期）")
                     exit(1)
 
-            logging.info('签到失败')
-            notice('苦力怕论坛自动签到：签到失败')
+            logging.info("签到失败")
+            notice("苦力怕论坛自动签到：签到失败")
             exit(1)
     else:
-        logging.info('签到失败')
-        notice('苦力怕论坛自动签到：签到失败')
+        logging.info("签到失败")
+        notice("苦力怕论坛自动签到：签到失败")
         exit(1)
 
 
@@ -168,9 +182,9 @@ def notice(msg):
 
 def email_notice(msg):
     message = MIMEMultipart()
-    message['From'] = mail_username
-    message['To'] = mail_to
-    message['Subject'] = msg
+    message["From"] = mail_username
+    message["To"] = mail_to
+    message["Subject"] = msg
     body = f"{msg}<br><br>Powered by <a href='https://github.com/xyz8848/KLPBBS_auto_sign_in'>https://github.com/xyz8848/KLPBBS_auto_sign_in</a>"
     message.attach(MIMEText(body, "html"))
 
@@ -179,24 +193,21 @@ def email_notice(msg):
         server.starttls()
         server.login(mail_username, mail_password)
         server.send_message(message)
-        logging.info('邮件发送成功')
+        logging.info("邮件发送成功")
     except smtplib.SMTPException as error:
-        logging.info('邮件发送失败')
+        logging.info("邮件发送失败")
         logging.error(error)
 
 
 def serverchan_notice(msg):
     url = f"https://sctapi.ftqq.com/{serverchan_key}.send"
-    data = {
-        "title": "苦力怕论坛自动签到",
-        "desp": msg
-    }
+    data = {"title": "苦力怕论坛自动签到", "desp": msg}
     try:
         response = requests.post(url, data=data)
         logging.debug(response.text)
-        logging.info('Server酱消息发送成功')
+        logging.info("Server酱消息发送成功")
     except requests.RequestException as error:
-        logging.info('Server酱消息发送失败')
+        logging.info("Server酱消息发送失败")
         logging.error(error)
 
 
@@ -212,28 +223,30 @@ def ntfy_notice(msg):
     url = f"{corrected_url}/{ntfy_topic}"
     data = msg.encode("utf-8")
 
-    headers = {
-        "Title": "苦力怕论坛自动签到".encode("utf-8")
-    }
+    headers = {"Title": "苦力怕论坛自动签到".encode("utf-8")}
     try:
         response = requests.post(url, data=data, headers=headers, auth=auth)
         logging.debug(response.text)
-        logging.info('Ntfy消息发送成功')
+        logging.info("Ntfy消息发送成功")
     except requests.RequestException as error:
-        logging.info('Ntfy消息发送失败')
+        logging.info("Ntfy消息发送失败")
         logging.error(error)
 
 
 def process_domain(domain):
-    if not domain.startswith(('http://', 'https://')):
-        domain = 'https://' + domain
-    parts = domain.split('/', 3)
-    corrected_url = parts[0] + '//' + parts[2] + '/' if len(parts) > 2 else parts[0] + '//' + parts[2]
+    if not domain.startswith(("http://", "https://")):
+        domain = "https://" + domain
+    parts = domain.split("/", 3)
+    corrected_url = (
+        parts[0] + "//" + parts[2] + "/"
+        if len(parts) > 2
+        else parts[0] + "//" + parts[2]
+    )
     return corrected_url
 
 
-if __name__ == '__main__':
-    logging.debug(f'UserAgent: {userAgent}')
+if __name__ == "__main__":
+    logging.debug(f"UserAgent: {userAgent}")
 
     login(username, password)
 
