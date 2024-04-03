@@ -205,7 +205,7 @@ def ntfy_notice(msg):
         auth = requests.auth.HTTPBasicAuth(ntfy_username, ntfy_password)
     if not ntfy_token == "":
         auth = requests.auth.HTTPBasicAuth("", ntfy_token)
-    else
+    else:
         logging.error("ntfy 认证信息异常")
 
     corrected_url = process_domain(ntfy_url)
