@@ -220,7 +220,7 @@ def ntfy_notice(msg):
         logging.error("ntfy 认证信息异常")
 
     corrected_url = process_domain(ntfy_url)
-    url = f"{corrected_url}/{ntfy_topic}"
+    url = f"{corrected_url}{ntfy_topic}"
     data = msg.encode("utf-8")
 
     headers = {"Title": "苦力怕论坛自动签到".encode("utf-8")}
