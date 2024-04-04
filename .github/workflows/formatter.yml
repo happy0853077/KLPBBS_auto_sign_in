@@ -28,7 +28,16 @@ jobs:
       - name: Format Python code
         run: black .
 
-      - name: Commit changes
+      - name: Check if local and remote branches are the same
+        run: |
+          local_branch=$(git symbolic-ref --short HEAD)
+          remote_branch=$(git rev-parse --abbrev-ref --symbolic-full-name @{u})
+          if [ "$local_branch" = "$remote_branch" ]; then
+            echo "本地分支和远程分支一致，不执行提交操作。"
+            exit 0
+          fi
+
+      - name: Commit formatted code
         run: |
           git config --global user.email "action@github.com"
           git config --global user.name "GitHub Action"
