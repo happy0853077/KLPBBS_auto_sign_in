@@ -28,7 +28,7 @@ jobs:
       - name: Format Python code
         run: black .
 
-      - name: Check if local and remote branches are the same
+      - name: Commit formatted code
         run: |
           local_branch=$(git symbolic-ref --short HEAD)
           remote_branch=$(git rev-parse --abbrev-ref --symbolic-full-name @{u})
@@ -36,11 +36,9 @@ jobs:
             echo "本地分支和远程分支一致，不执行提交操作。"
             exit 0
           fi
-
-      - name: Commit formatted code
-        run: |
-          git config --global user.email "action@github.com"
-          git config --global user.name "GitHub Action"
-          git add .
-          git commit -m "Auto-format code"
-          git push
+            echo "本地分支和远程分支不一致，继续执行提交操作。"
+            git config --global user.email "action@github.com"
+            git config --global user.name "GitHub Action"
+            git add .
+            git commit -m "Auto-format code"
+            git push
