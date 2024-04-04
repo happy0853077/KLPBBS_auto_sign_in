@@ -33,10 +33,10 @@ jobs:
           git config --global user.email "action@github.com"
           git config --global user.name "GitHub Action"
           git add .
-          git commit -m "Auto-format code"
           git diff --exit-code origin/main..HEAD
           if [ $? -ne 0 ]; then
             echo "Local branch and remote branch are inconsistent. Pushing changes..."
+            git commit -m "Auto-format code"
             git push
           else
             echo "Local branch and remote branch are consistent. No action needed."
