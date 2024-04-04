@@ -30,15 +30,14 @@ jobs:
 
       - name: Commit formatted code
         run: |
-          local_branch=$(git symbolic-ref --short HEAD)
-          remote_branch=$(git rev-parse --abbrev-ref --symbolic-full-name @{u})
-          if [ "$local_branch" = "$remote_branch" ]; then
-            echo "本地分支和远程分支一致，不执行提交操作。"
-            exit 0
-          fi
-            echo "本地分支和远程分支不一致，继续执行提交操作。"
-            git config --global user.email "action@github.com"
-            git config --global user.name "GitHub Action"
-            git add .
-            git commit -m "Auto-format code"
+          git config --global user.email "action@github.com"
+          git config --global user.name "GitHub Action"
+          git add .
+          git commit -m "Auto-format code"
+          git diff --exit-code origin/main..HEAD
+          if [ $? -ne 0 ]; then
+            echo "Local branch and remote branch are inconsistent. Pushing changes..."
             git push
+          else
+            echo "Local branch and remote branch are consistent. No action needed."
+          fi
