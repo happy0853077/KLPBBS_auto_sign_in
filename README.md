@@ -26,7 +26,8 @@
 2. 添加以下 secret：[`MAIL_ENABLE`](https://github.com/xyz8848/KLPBBS_auto_sign_in/blob/main/docs/secrets.md#mail_enable)，[`MAIL_HOST`](https://github.com/xyz8848/KLPBBS_auto_sign_in/blob/main/docs/secrets.md#mail_host)，[`MAIL_PORT`](https://github.com/xyz8848/KLPBBS_auto_sign_in/blob/main/docs/secrets.md#mail_port)，[`MAIL_USERNAME`](https://github.com/xyz8848/KLPBBS_auto_sign_in/blob/main/docs/secrets.md#mail_username)，[`MAIL_PASSWORD`](https://github.com/xyz8848/KLPBBS_auto_sign_in/blob/main/docs/secrets.md#mail_password)，[`MAIL_TO`](https://github.com/xyz8848/KLPBBS_auto_sign_in/blob/main/docs/secrets.md#mail_to)
 
 ### 签到后企业微信提示
-_施工中_
+1. 打开 Actions secrets and variables
+2. 添加以下 secret：[`WECHAT_ENABLE`](https://github.com/xyz8848/KLPBBS_auto_sign_in/blob/main/docs/secrets.md#wechat_enable)，[`WECHAT_WEBHOOK`](https://github.com/xyz8848/KLPBBS_auto_sign_in/blob/main/docs/secrets.md#wechat_webhook)，[`WECHAT_MENTIONED`](https://github.com/xyz8848/KLPBBS_auto_sign_in/blob/main/docs/secrets.md#wechat_mentioned)
 
 ### 签到后Server酱提示
 1. 打开 Actions secrets and variables

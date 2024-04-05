@@ -28,6 +28,10 @@ mail_username = os.environ.get("MAIL_USERNAME")
 mail_password = os.environ.get("MAIL_PASSWORD")
 mail_to = os.environ.get("MAIL_TO") or []
 
+wechat_enable = int(os.environ.get("WECHAT_ENABLE") or 0)
+wechat_webhook = os.environ.get("WECHAT_WEBHOOK")
+wechat_mentioned = os.environ.get("WECHAT_MENTIONED") or []
+
 serverchan_enable = int(os.environ.get("SERVERCHAN_ENABLE") or 0)
 serverchan_key = os.environ.get("SERVERCHAN_KEY")
 
@@ -62,7 +66,14 @@ session = requests.session()
 session.cookies = http.cookiejar.LWPCookieJar()
 
 
-def login(username, password):
+def login(username: str, password: str):
+    """
+    登录苦力怕论坛
+
+    Args:
+        username: 苦力怕论坛用户名
+        password: 苦力怕论坛密码
+    """
     post_url = "https://klpbbs.com/member.php?mod=logging&action=login&loginsubmit=yes"
     post_data = {
         "username": username,
@@ -90,6 +101,12 @@ def login(username, password):
 
 
 def get_url():
+    """
+    获取签到链接
+
+    Returns:
+        签到链接 (sign_in_url)
+    """
     html_source = session.get("https://klpbbs.com/")
     logging.debug(html_source.text)
     soup = BeautifulSoup(html_source.text, "html.parser")
@@ -112,11 +129,20 @@ def get_url():
         return None
 
 
-def sign_in(sign_in_url):
+def sign_in(sign_in_url: str):
+    """
+    签到
+
+    Args:
+        sign_in_url: 签到链接
+    """
     session.get(sign_in_url, headers=header)
 
 
 def is_sign_in():
+    """
+    检测是否签到成功
+    """
     html_source = session.get("https://klpbbs.com/")
     logging.debug(f"https://klpbbs.com/ = {html_source.text}")
     soup = BeautifulSoup(html_source.text, "html.parser")
@@ -125,7 +151,7 @@ def is_sign_in():
         href_value = a_tag["href"]
         if href_value == "k_misign-sign.html":
             logging.info("已成功签到")
-            notice("苦力怕论坛自动签到：已成功签到！")
+            notice("已成功签到！")
             exit(0)
         else:  # 异常处理
             # 用户组到期处理
@@ -140,14 +166,14 @@ def is_sign_in():
                         headers=header,
                     )
                     logging.info("已切换回普通用户组")
-                    notice("苦力怕论坛自动签到：已切换回普通用户组")
+                    notice("已切换回普通用户组")
                 elif renewal_vip == 1:
                     session.get(
                         "https://klpbbs.com/home.php?mod=spacecp&ac=usergroup&do=buy&groupid=21&inajax=1",
                         headers=header,
                     )
                     logging.info("已续费VIP")
-                    notice("苦力怕论坛自动签到：已续费VIP")
+                    notice("已续费VIP")
                     os.execl(sys.executable, sys.executable, *sys.argv)
                 elif renewal_svip == 1:
                     session.get(
@@ -155,37 +181,51 @@ def is_sign_in():
                         headers=header,
                     )
                     logging.info("已续费SVIP")
-                    notice("苦力怕论坛自动签到：已续费SVIP")
+                    notice("已续费SVIP")
                     os.execl(sys.executable, sys.executable, *sys.argv)
                 else:
                     logging.info(f"签到失败（原因：当前用户组已到期）")
-                    notice("苦力怕论坛自动签到：签到失败（原因：当前用户组已到期）")
+                    notice("签到失败（原因：当前用户组已到期）")
                     exit(1)
 
             logging.info("签到失败")
-            notice("苦力怕论坛自动签到：签到失败")
+            notice("签到失败")
             exit(1)
     else:
         logging.info("签到失败")
-        notice("苦力怕论坛自动签到：签到失败")
+        notice("签到失败")
         exit(1)
 
 
-def notice(msg):
+def notice(msg: str):
+    """
+    签到后提示
+
+    Args:
+        msg: 提示信息
+    """
     if mail_enable == 1:
         email_notice(msg)
+    if wechat_enable == 1:
+        wechat_notice(msg)
     if serverchan_enable == 1:
         serverchan_notice(msg)
     if ntfy_enable == 1:
         ntfy_notice(msg)
 
 
-def email_notice(msg):
+def email_notice(msg: str):
+    """
+    签到后邮件提示
+
+    Args:
+        msg: 提示信息
+    """
     message = MIMEMultipart()
     message["From"] = mail_username
     message["To"] = mail_to
     message["Subject"] = msg
-    body = f"{msg}<br><br>Powered by <a href='https://github.com/xyz8848/KLPBBS_auto_sign_in'>https://github.com/xyz8848/KLPBBS_auto_sign_in</a>"
+    body = f"<h1>苦力怕论坛自动签到</h1><br><br>{msg}<br><br>Powered by <a href='https://github.com/xyz8848/KLPBBS_auto_sign_in'>https://github.com/xyz8848/KLPBBS_auto_sign_in</a>"
     message.attach(MIMEText(body, "html"))
 
     try:
@@ -199,7 +239,40 @@ def email_notice(msg):
         logging.error(error)
 
 
-def serverchan_notice(msg):
+def wechat_notice(msg: str):
+    """
+    签到后企业微信通知
+
+    Args:
+        msg: 提示信息
+    """
+    # 构建消息体
+    data = {
+        "msgtype": "text",
+        "text": {
+            "content": f"苦力怕论坛自动签到\n\n{msg}\n\nPowered by https://github.com/xyz8848/KLPBBS_auto_sign_in",
+            # 可以在 mentioned_list 中添加 "@all"，提醒所有人查看信息
+            "mentioned_list": wechat_mentioned,
+        }
+    }
+
+    # 发送 POST 请求
+    response = requests.post(wechat_webhook, json=data)
+
+    # 检查响应状态码
+    if response.status_code == 200:
+        logging.info("企业微信通知发送成功")
+    else:
+        logging.error(f"企业微信通知发送失败，状态码：{response.status_code}")
+
+
+def serverchan_notice(msg: str):
+    """
+    签到后Server酱通知
+
+    Args:
+        msg: 提示信息
+    """
     url = f"https://sctapi.ftqq.com/{serverchan_key}.send"
     data = {"title": "苦力怕论坛自动签到", "desp": msg}
     try:
@@ -211,7 +284,13 @@ def serverchan_notice(msg):
         logging.error(error)
 
 
-def ntfy_notice(msg):
+def ntfy_notice(msg: str):
+    """
+    签到后Ntfy通知
+
+    Args:
+        msg: 提示信息
+    """
     if not ntfy_username == "":
         auth = requests.auth.HTTPBasicAuth(ntfy_username, ntfy_password)
     if not ntfy_token == "":
@@ -219,7 +298,7 @@ def ntfy_notice(msg):
     else:
         logging.error("ntfy 认证信息异常")
 
-    corrected_url = process_domain(ntfy_url)
+    corrected_url = normalize_domain(ntfy_url)
     url = f"{corrected_url}{ntfy_topic}"
     data = msg.encode("utf-8")
 
@@ -233,16 +312,25 @@ def ntfy_notice(msg):
         logging.error(error)
 
 
-def process_domain(domain):
+def normalize_domain(domain: str):
+    """
+    域名规范化
+
+    Args:
+        domain: 域名
+
+    Returns:
+        normalize_domain: 规范化的域名
+    """
     if not domain.startswith(("http://", "https://")):
         domain = "https://" + domain
     parts = domain.split("/", 3)
-    corrected_url = (
+    normalize_domain = (
         parts[0] + "//" + parts[2] + "/"
         if len(parts) > 2
         else parts[0] + "//" + parts[2]
     )
-    return corrected_url
+    return normalize_domain
 
 
 if __name__ == "__main__":

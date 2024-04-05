@@ -73,6 +73,24 @@
 - **值型**：列表
 - **示例**：`['admin@example.com']`，`['admin1@example.com', 'admin2@example.com']`
 
+### WECHAT_ENABLE
+- **描述**：签到后微信推送（0=关闭，1=开启）
+- **必填**：否
+- **值型**：整数
+- **示例**：`1`
+
+### WECHAT_WEBHOOK
+- **描述**：企业微信机器人的 Webhook 地址
+- **必填**：否
+- **值型**：字符串
+- **示例**：`https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=your-key`
+
+### WECHAT_MENTIONED
+- **描述**：推送信息时 @用户
+- **必填**：否
+- **值型**：列表
+- **示例**：`["@all"]`，`["@user1", "@user2"]`
+
 ### SERVERCHAN_ENABLE
 - **描述**：签到后Server酱提示（0=关闭，1=开启）
 - **必填**：否
